@@ -75,6 +75,11 @@
         .address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: var(--primary-color); }
         .remove-addr-btn { background: #ffcdd2; color: #c62828; border: none; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
         .add-addr-btn { width: 100%; background: #e8f5e9; color: var(--primary-color); border: 1px dashed var(--primary-color); padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; margin-bottom: 12px; }
+        .add-addr-btn:disabled { background: #eee; color: #aaa; border-color: #ccc; cursor: not-allowed; }
+
+        .item-select-row { display: flex; gap: 8px; margin-bottom: 6px; }
+        .item-select-row select { flex: 2; }
+        .item-select-row input { flex: 1; text-align: center; }
 
         .order-summary { background: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.875rem; }
         .bank-info-box { background: #fff8e1; border: 1px dashed #ffa000; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
@@ -146,7 +151,7 @@
                         <span>📦 배송지 정보</span>
                     </div>
                     <div id="addressListContainer"></div>
-                    <button type="button" class="add-addr-btn" onclick="addAddressCard()">+ 배송지 추가하기 (다른 곳으로 보낼 때)</button>
+                    <button type="button" class="add-addr-btn" id="addAddrBtn" onclick="addAddressCard()">+ 배송지 추가하기</button>
                 </div>
 
                 <div class="form-group">
@@ -189,7 +194,6 @@
         let currentSlideState = {};
         let addressCardCount = 0;
 
-        // 전화번호에 하이픈(-) 자동 추가하는 함수
         function formatPhoneNumber(value) {
             if (!value) return "";
             value = value.replace(/[^0-9]/g, "");
@@ -294,18 +298,93 @@
             document.getElementById('orderBtn').disabled = totalItems === 0;
         }
 
+        // 남은 잔여 수량 계산 함수
+        function getRemainingCart() {
+            let remaining = { ...cart };
+            const cards = document.querySelectorAll('.address-card');
+
+            cards.forEach(card => {
+                const pId = card.querySelector('.addr-item-select')?.value;
+                const qtyInput = card.querySelector('.addr-qty-input')?.value;
+
+                if (pId && qtyInput) {
+                    const count = parseInt(qtyInput) || 0;
+                    if (remaining[pId]) {
+                        remaining[pId] -= count;
+                        if (remaining[pId] <= 0) delete remaining[pId];
+                    }
+                }
+            });
+            return remaining;
+        }
+
+        // 각 배송지 카드의 드롭다운/수량 옵션 갱신
+        function updateAllAddressCardsOptions() {
+            const cards = document.querySelectorAll('.address-card');
+            
+            cards.forEach((card) => {
+                const select = card.querySelector('.addr-item-select');
+                const qtyInput = card.querySelector('.addr-qty-input');
+                const currentSelectedPid = select.value;
+                const currentQty = parseInt(qtyInput.value) || 1;
+
+                // 해당 카드를 제외한 타 카드의 차감 수량 반영
+                let tempRemaining = { ...cart };
+                cards.forEach(otherCard => {
+                    if (otherCard !== card) {
+                        const otherPid = otherCard.querySelector('.addr-item-select')?.value;
+                        const otherQty = parseInt(otherCard.querySelector('.addr-qty-input')?.value) || 0;
+                        if (otherPid && tempRemaining[otherPid]) {
+                            tempRemaining[otherPid] -= otherQty;
+                            if (tempRemaining[otherPid] <= 0) delete tempRemaining[otherPid];
+                        }
+                    }
+                });
+
+                select.innerHTML = '';
+                let validSelection = false;
+
+                for (const pId in tempRemaining) {
+                    const p = products.find(prod => prod.id == pId);
+                    if (p && tempRemaining[pId] > 0) {
+                        const opt = document.createElement('option');
+                        opt.value = p.id;
+                        opt.innerText = `${p.name} (남은 수량: ${tempRemaining[pId]}개)`;
+                        select.appendChild(opt);
+
+                        if (p.id == currentSelectedPid) validSelection = true;
+                    }
+                }
+
+                if (validSelection) {
+                    select.value = currentSelectedPid;
+                    const maxAvail = tempRemaining[currentSelectedPid] || 1;
+                    qtyInput.max = maxAvail;
+                    if (currentQty > maxAvail) qtyInput.value = maxAvail;
+                } else if (select.options.length > 0) {
+                    select.selectedIndex = 0;
+                    const newPid = select.value;
+                    qtyInput.max = tempRemaining[newPid] || 1;
+                    qtyInput.value = 1;
+                }
+            });
+
+            // 모든 수량이 배정되었으면 추가 버튼 비활성화
+            const globalRemaining = getRemainingCart();
+            const totalRemainingCount = Object.values(globalRemaining).reduce((a, b) => a + b, 0);
+            document.getElementById('addAddrBtn').disabled = totalRemainingCount === 0;
+        }
+
         function addAddressCard() {
+            const remaining = getRemainingCart();
+            if (Object.keys(remaining).length === 0) {
+                alert('배송지에 지정할 남은 상품 수량이 없습니다.');
+                return;
+            }
+
             addressCardCount++;
             const cardId = `addrCard_${addressCardCount}`;
             const container = document.getElementById('addressListContainer');
-
-            let itemOptionsHTML = '';
-            for (const id in cart) {
-                const p = products.find(prod => prod.id == id);
-                if (p) {
-                    itemOptionsHTML += `<option value="${p.name}">${p.name} (${cart[id]}개)</option>`;
-                }
-            }
 
             const card = document.createElement('div');
             card.className = 'address-card';
@@ -319,11 +398,11 @@
                     ${container.children.length > 0 ? `<button type="button" class="remove-addr-btn" onclick="removeAddressCard('${cardId}')">삭제</button>` : ''}
                 </div>
                 <div class="form-group">
-                    <label>배송할 상품 선택 *</label>
-                    <select class="addr-item-select" required>
-                        <option value="전체 상품">선택한 전체 상품 배송</option>
-                        ${itemOptionsHTML}
-                    </select>
+                    <label>배송할 상품 및 수량 선택 *</label>
+                    <div class="item-select-row">
+                        <select class="addr-item-select" onchange="updateAllAddressCardsOptions()" required></select>
+                        <input type="number" class="addr-qty-input" min="1" value="1" oninput="handleQtyInputChange(this)" required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>받는 사람 성함 *</label>
@@ -339,11 +418,28 @@
                 </div>
             `;
             container.appendChild(card);
+            updateAllAddressCardsOptions();
+        }
+
+        function handleQtyInputChange(input) {
+            const max = parseInt(input.max) || 1;
+            let val = parseInt(input.value) || 1;
+            if (val > max) input.value = max;
+            if (val < 1) input.value = 1;
+            updateAllAddressCardsOptions();
         }
 
         function removeAddressCard(cardId) {
             const card = document.getElementById(cardId);
             if (card) card.remove();
+            
+            // 배송지 번호 재정렬
+            const cards = document.querySelectorAll('.address-card');
+            cards.forEach((c, idx) => {
+                c.querySelector('.address-card-header span').innerText = `📍 배송지 #${idx + 1}`;
+            });
+
+            updateAllAddressCardsOptions();
         }
 
         function copyOrdererToCard(cardId, checkbox) {
@@ -387,9 +483,8 @@
             document.getElementById('modalOrderSummary').innerHTML = summaryHTML;
             
             const container = document.getElementById('addressListContainer');
-            if (container.children.length === 0) {
-                addAddressCard();
-            }
+            container.innerHTML = '';
+            addAddressCard();
 
             document.getElementById('orderModal').style.display = 'flex';
         }
@@ -400,21 +495,31 @@
         async function submitOrder(e) {
             e.preventDefault();
 
+            // 남은 상품 수량이 모두 지정되었는지 확인
+            const remaining = getRemainingCart();
+            const totalRemainingCount = Object.values(remaining).reduce((a, b) => a + b, 0);
             const method = document.getElementById('receiveMethod').value;
+
+            if (method === '택배 배송' && totalRemainingCount > 0) {
+                alert(`배송지가 지정되지 않은 상품이 ${totalRemainingCount}개 남아있습니다.\n'배송지 추가하기'를 눌러 배송지를 모두 설정해 주세요.`);
+                return;
+            }
+
             let receiverNames = [], receiverPhones = [], addresses = [];
 
             if (method === '택배 배송') {
                 const cards = document.querySelectorAll('.address-card');
                 cards.forEach((card, idx) => {
-                    const itemSelect = card.querySelector('.addr-item-select').value;
+                    const pId = card.querySelector('.addr-item-select').value;
+                    const product = products.find(p => p.id == pId);
+                    const qty = card.querySelector('.addr-qty-input').value;
                     const name = card.querySelector('.addr-name').value.trim();
                     const phone = formatPhoneNumber(card.querySelector('.addr-phone').value.trim());
                     const addr = card.querySelector('.addr-text').value.trim();
 
-                    // 각 항목별로 줄바꿈(\n) 형태로 저장
                     receiverNames.push(`[배송지${idx+1}] ${name}`);
                     receiverPhones.push(`[배송지${idx+1}] ${phone}`);
-                    addresses.push(`[배송지${idx+1}] (${itemSelect}) ${addr}`);
+                    addresses.push(`[배송지${idx+1}] (${product ? product.name : ''} ${qty}개) ${addr}`);
                 });
             } else {
                 receiverNames.push('직접수령');
@@ -439,7 +544,6 @@
 
             const { currentShipping, grandTotal } = calculateCartTotals();
 
-            // \n 을 사용하여 구글 시트 셀 내부 줄바꿈 적용
             const orderData = {
                 name: document.getElementById('userName').value.trim(),
                 phone: formatPhoneNumber(document.getElementById('userPhone').value.trim()),
