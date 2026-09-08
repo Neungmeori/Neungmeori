@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>프리미엄 산지직송 샤인머스켓</title>
-    <!-- PWA 지원 설정 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="샤인머스켓 직거래">
@@ -21,358 +20,61 @@
             --text-sub: #666666;
             --border-color: #e0e0e0;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding-bottom: 90px;
-            max-width: 500px;
-            margin: 0 auto;
-            min-height: 100vh;
-            position: relative;
-            border-left: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-        }
-
-        /* 헤더 */
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 18px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        header p {
-            font-size: 0.8rem;
-            opacity: 0.85;
-            margin-top: 4px;
-        }
-
-        /* 공지사항 바 */
-        .notice-bar {
-            background-color: #fff3e0;
-            color: #e65100;
-            padding: 10px 16px;
-            font-size: 0.825rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid #ffe0b2;
-        }
-
-        /* 상품 목록 */
-        .product-list {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .product-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background-color: #eee;
-        }
-
-        .product-info {
-            padding: 14px;
-        }
-
-        .product-badge {
-            display: inline-block;
-            background: var(--primary-light);
-            color: var(--primary-color);
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-            margin-bottom: 6px;
-        }
-
-        .product-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .product-desc {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-
-        .product-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .product-price {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--primary-color);
-        }
-
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #f1f3f5;
-            padding: 4px 8px;
-            border-radius: 8px;
-        }
-
-        .qty-btn {
-            border: none;
-            background: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .qty-val {
-            font-size: 0.95rem;
-            font-weight: 700;
-            min-width: 18px;
-            text-align: center;
-        }
-
-        /* 하단 장바구니 바 */
-        .cart-bar {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 500px;
-            background: white;
-            padding: 12px 16px;
-            border-top: 1px solid var(--border-color);
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 90;
-        }
-
-        .cart-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-count {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-        }
-
-        .cart-total {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--accent-color);
-        }
-
-        .order-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .order-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* 주문서 작성 모달 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 200;
-            justify-content: center;
-            align-items: flex-end;
-        }
-
-        .modal-content {
-            background: white;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 20px 20px 0 0;
-            padding: 24px 20px;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .modal-header h2 {
-            font-size: 1.2rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-sub);
-            cursor: pointer;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-main);
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-
-        .form-group textarea {
-            resize: none;
-            height: 60px;
-        }
-
-        .order-summary {
-            background: var(--primary-light);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            font-size: 0.875rem;
-        }
-
-        .bank-info-box {
-            background: #fff8e1;
-            border: 1px dashed #ffa000;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-
-        .bank-info-box p {
-            font-size: 0.85rem;
-            color: #5d4037;
-            line-height: 1.4;
-        }
-
-        .bank-account {
-            font-weight: bold;
-            font-size: 1rem;
-            color: #d84315;
-            margin-top: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .copy-btn {
-            background: white;
-            border: 1px solid #d84315;
-            color: #d84315;
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 90px; max-width: 500px; margin: 0 auto; min-height: 100vh; position: relative; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+        header { background-color: var(--primary-color); color: white; padding: 18px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        header h1 { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        header p { font-size: 0.8rem; opacity: 0.85; margin-top: 4px; }
+        .notice-bar { background-color: #fff3e0; color: #e65100; padding: 10px 16px; font-size: 0.825rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #ffe0b2; }
+        .product-list { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+        .product-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
+        .product-img { width: 100%; height: 200px; object-fit: cover; background-color: #eee; }
+        .product-info { padding: 14px; }
+        .product-badge { display: inline-block; background: var(--primary-light); color: var(--primary-color); font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; margin-bottom: 6px; }
+        .product-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+        .product-desc { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px; line-height: 1.4; }
+        .product-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .product-price { font-size: 1.15rem; font-weight: 800; color: var(--primary-color); }
+        .qty-controls { display: flex; align-items: center; gap: 10px; background: #f1f3f5; padding: 4px 8px; border-radius: 8px; }
+        .qty-btn { border: none; background: white; width: 28px; height: 28px; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .qty-val { font-size: 0.95rem; font-weight: 700; min-width: 18px; text-align: center; }
+        .cart-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; padding: 12px 16px; border-top: 1px solid var(--border-color); box-shadow: 0 -4px 12px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; z-index: 90; }
+        .cart-info { display: flex; flex-direction: column; }
+        .cart-count { font-size: 0.8rem; color: var(--text-sub); }
+        .cart-total { font-size: 1.2rem; font-weight: 800; color: var(--accent-color); }
+        .order-btn { background: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        .order-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
+        .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 24px 20px; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+        .modal-header h2 { font-size: 1.2rem; }
+        .close-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-sub); cursor: pointer; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem; }
+        .form-group textarea { resize: none; height: 60px; }
+        .order-summary { background: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.875rem; }
+        .bank-info-box { background: #fff8e1; border: 1px dashed #ffa000; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+        .bank-info-box p { font-size: 0.85rem; color: #5d4037; line-height: 1.4; }
+        .bank-account { font-weight: bold; font-size: 1rem; color: #d84315; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .copy-btn { background: white; border: 1px solid #d84315; color: #d84315; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        .submit-btn { width: 100%; background: var(--primary-color); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- 헤더 -->
     <header>
         <h1>🍇 산지직송 프리미엄 샤인머스켓</h1>
-        <p>당도 보장! 지인 한정 특가 직거래 장터</p>
+        <p>구글 시트로 자동 접수되는 직거래 장터</p>
     </header>
 
-    <!-- 공지사항 -->
     <div class="notice-bar">
         <span>📢</span>
-        <span>주문 후 입금이 확인되면 안전하게 수확하여 발송/전달해 드립니다.</span>
+        <span>주문 후 계좌 입금 확인 시 순차적으로 발송해 드립니다.</span>
     </div>
 
-    <!-- 상품 목록 -->
-    <div class="product-list" id="productList">
-        <!-- JS로 dynamic 생성됨 -->
-    </div>
+    <div class="product-list" id="productList"></div>
 
-    <!-- 하단 장바구니 바 -->
     <div class="cart-bar">
         <div class="cart-info">
             <span class="cart-count" id="cartCount">선택한 상품: 0개</span>
@@ -381,33 +83,24 @@
         <button class="order-btn" id="orderBtn" onclick="openOrderModal()" disabled>주문하기</button>
     </div>
 
-    <!-- 주문서 작성 모달 -->
     <div class="modal" id="orderModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>📋 주문서 작성</h2>
                 <button class="close-btn" onclick="closeOrderModal()">&times;</button>
             </div>
-
-            <!-- 주문 요약 -->
-            <div class="order-summary" id="modalOrderSummary">
-                <!-- 주문 내역 요약 -->
-            </div>
-
-            <!-- 계좌 안내 -->
+            <div class="order-summary" id="modalOrderSummary"></div>
             <div class="bank-info-box">
                 <p>📌 <strong>입금 계좌 안내 (선입금)</strong></p>
                 <div class="bank-account">
-                    <span id="accountText">NH농협 123-4567-8901-23 (예금주: 홍길동)</span>
+                    <span id="accountText">NH농협 123-4567-8901-23 (홍길동)</span>
                     <button class="copy-btn" onclick="copyAccount()">복사</button>
                 </div>
             </div>
-
-            <!-- 입력 폼 -->
             <form id="orderForm" onsubmit="submitOrder(event)">
                 <div class="form-group">
                     <label>주문자 성함 *</label>
-                    <input type="text" id="userName" placeholder="입금자명과 동일하게 입력" required>
+                    <input type="text" id="userName" placeholder="입금자명" required>
                 </div>
                 <div class="form-group">
                     <label>연락처 *</label>
@@ -416,68 +109,38 @@
                 <div class="form-group">
                     <label>수령 방법 *</label>
                     <select id="receiveMethod" required>
-                        <option value="직접 수령">직접 수령 (농장/지정장소)</option>
-                        <option value="택배 배송">택배 배송 (안전 포장 발송)</option>
+                        <option value="직접 수령">직접 수령</option>
+                        <option value="택배 배송">택배 배송</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>배송지 주소 (택배 선택 시)</label>
-                    <input type="text" id="userAddress" placeholder="상세주소 포함 입력">
+                    <input type="text" id="userAddress" placeholder="상세주소 포함">
                 </div>
                 <div class="form-group">
                     <label>요청사항 (선택)</label>
-                    <textarea id="userMemo" placeholder="전할 말씀이 있다면 적어주세요."></textarea>
+                    <textarea id="userMemo" placeholder="요청사항"></textarea>
                 </div>
-
-                <button type="submit" class="submit-btn">문자로 주문서 제출하기</button>
+                <button type="submit" class="submit-btn" id="submitBtnText">구글 시트로 주문서 전송하기</button>
             </form>
         </div>
     </div>
 
     <script>
-        // ===============================================
-        // 1. 데이터 설정 (가격과 상품 구성을 수정하세요)
-        // ===============================================
-        const PHONE_NUMBER = "01012345678"; // 판매자 휴대폰 번호 (숫자만)
+        // 🚨 여기에 2단계에서 복사한 구글 앱스 스크립트 웹 앱 URL을 넣으세요!
+        const GOOGLE_SCRIPT_URL = https://script.google.com/macros/s/AKfycbxfwsUenkqg0QOg-ITc7AZUbjSBPs2XK40HXp-rx9C514dt-t6xcHvh2QHFh_s_nxu5/exec; 
         const BANK_ACCOUNT_INFO = "NH농협 123-4567-8901-23 (홍길동)";
 
         const products = [
-            {
-                id: 1,
-                name: "샤인머스켓 실속형 (2kg / 2~3수)",
-                price: 28000,
-                desc: "가정에서 실속있게 즐기는 당도 높은 고당도 샤인머스켓.",
-                image: "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80",
-                badge: "인기만점"
-            },
-            {
-                id: 2,
-                name: "샤인머스켓 선물용 프리미엄 (2kg / 2수)",
-                price: 35000,
-                desc: "알이 굵고 튼실하며 선물용 전용 박스에 담겨 나가는 최상급.",
-                image: "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80",
-                badge: "선물추천"
-            },
-            {
-                id: 3,
-                name: "샤인머스켓 대용량 패밀리 (4kg / 4~5수)",
-                price: 52000,
-                desc: "온 가족이 넉넉하게 즐길 수 있는 산지직송 대용량팩.",
-                image: "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80",
-                badge: "베스트"
-            }
+            { id: 1, name: "샤인머스켓 실속형 (2kg)", price: 28000, desc: "가정에서 즐기는 고당도 샤인머스켓.", image: "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80", badge: "인기만점" },
+            { id: 2, name: "샤인머스켓 선물용 (2kg)", price: 35000, desc: "선물 전용 박스 최상급.", image: "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80", badge: "선물추천" }
         ];
 
-        // 장바구니 상태 관리
         let cart = {};
 
-        // ===============================================
-        // 2. 화면 렌더링 함수
-        // ===============================================
         function renderProducts() {
             const container = document.getElementById('productList');
             container.innerHTML = '';
-
             products.forEach(p => {
                 const qty = cart[p.id] || 0;
                 const card = document.createElement('div');
@@ -500,50 +163,32 @@
                 `;
                 container.appendChild(card);
             });
-
             updateCartBar();
         }
 
         function updateQty(id, change) {
             const currentQty = cart[id] || 0;
             const newQty = currentQty + change;
-
-            if (newQty <= 0) {
-                delete cart[id];
-            } else {
-                cart[id] = newQty;
-            }
-
+            if (newQty <= 0) delete cart[id];
+            else cart[id] = newQty;
             renderProducts();
         }
 
         function updateCartBar() {
-            let totalItems = 0;
-            let totalPrice = 0;
-
+            let totalItems = 0, totalPrice = 0;
             for (const id in cart) {
                 const count = cart[id];
                 const product = products.find(p => p.id == id);
-                if (product) {
-                    totalItems += count;
-                    totalPrice += product.price * count;
-                }
+                if (product) { totalItems += count; totalPrice += product.price * count; }
             }
-
             document.getElementById('cartCount').innerText = `선택한 상품: ${totalItems}개`;
             document.getElementById('cartTotal').innerText = `${totalPrice.toLocaleString()}원`;
-            
-            const orderBtn = document.getElementById('orderBtn');
-            orderBtn.disabled = totalItems === 0;
+            document.getElementById('orderBtn').disabled = totalItems === 0;
         }
 
-        // ===============================================
-        // 3. 주문 모달 & 문자 전송 기능
-        // ===============================================
         function openOrderModal() {
             let summaryHTML = '<strong>🛒 주문 목록</strong><br><ul style="padding-left:18px; margin-top:6px;">';
             let totalPrice = 0;
-
             for (const id in cart) {
                 const count = cart[id];
                 const product = products.find(p => p.id == id);
@@ -554,70 +199,62 @@
                 }
             }
             summaryHTML += `</ul><div style="margin-top:8px; font-weight:bold; color:#f57c00;">총 입금 예정 금액: ${totalPrice.toLocaleString()}원</div>`;
-            
             document.getElementById('modalOrderSummary').innerHTML = summaryHTML;
             document.getElementById('orderModal').style.display = 'flex';
         }
 
-        function closeOrderModal() {
-            document.getElementById('orderModal').style.display = 'none';
-        }
+        function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
 
         function copyAccount() {
-            const text = document.getElementById('accountText').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('계좌번호가 복사되었습니다!');
-            });
+            navigator.clipboard.writeText(document.getElementById('accountText').innerText).then(() => alert('계좌번호 복사 완료!'));
         }
 
         function submitOrder(e) {
             e.preventDefault();
-
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value;
-            const method = document.getElementById('receiveMethod').value;
-            const address = document.getElementById('userAddress').value;
-            const memo = document.getElementById('userMemo').value;
+            const submitBtn = document.getElementById('submitBtnText');
+            submitBtn.innerText = "주문 접수 중...";
+            submitBtn.disabled = true;
 
             let itemListStr = "";
             let totalPrice = 0;
-
             for (const id in cart) {
                 const count = cart[id];
                 const product = products.find(p => p.id == id);
                 if (product) {
-                    const itemTotal = product.price * count;
-                    totalPrice += itemTotal;
-                    itemListStr += `- ${product.name} : ${count}개 (${itemTotal.toLocaleString()}원)\n`;
+                    totalPrice += product.price * count;
+                    itemListStr += `${product.name} ${count}개 / `;
                 }
             }
 
-            const message = 
-`[샤인머스켓 주문서 접수]
--------------------
-👤 주문자: ${name}
-📞 연락처: ${phone}
-🚚 수령방법: ${method}
-${address ? `📍 주소: ${address}\n` : ''}
-🛒 주문 내역:
-${itemListStr}
-💰 총 금액: ${totalPrice.toLocaleString()}원
-🏦 입금 계좌: ${BANK_ACCOUNT_INFO}
-${memo ? `📝 요청사항: ${memo}` : ''}
--------------------
-입금 확인 후 확인 부탁드립니다!`;
+            const orderData = {
+                name: document.getElementById('userName').value,
+                phone: document.getElementById('userPhone').value,
+                method: document.getElementById('receiveMethod').value,
+                items: itemListStr,
+                totalPrice: totalPrice.toLocaleString() + '원',
+                address: document.getElementById('userAddress').value || '없음',
+                memo: document.getElementById('userMemo').value || '없음'
+            };
 
-            const encodedMsg = encodeURIComponent(message);
-            window.location.href = `sms:${PHONE_NUMBER}?body=${encodedMsg}`;
-
-            alert('주문서 작성이 완료되었습니다! 문자 창이 열리면 [전송]을 눌러 완료해 주세요.');
-            
-            cart = {};
-            renderProducts();
-            closeOrderModal();
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            }).then(() => {
+                alert('주문이 성공적으로 접수되었습니다! 감사합니다.');
+                cart = {};
+                renderProducts();
+                closeOrderModal();
+                submitBtn.innerText = "구글 시트로 주문서 전송하기";
+                submitBtn.disabled = false;
+            }).catch(error => {
+                alert('주문 전송 중 오류가 발생했습니다. 다시 시도해 주세요.');
+                submitBtn.innerText = "구글 시트로 주문서 전송하기";
+                submitBtn.disabled = false;
+            });
         }
 
-        // 초기 실행
         renderProducts();
     </script>
 </body>
