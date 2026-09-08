@@ -15,7 +15,7 @@
       --radius: 12px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--gray-bg); color: var(--text); padding-bottom: 110px; word-break: keep-all; }
+    body { background-color: var(--gray-bg); color: var(--text); padding-bottom: 120px; word-break: keep-all; }
     .container { max-width: 500px; margin: 0 auto; background: #FFF; min-height: 100vh; padding: 20px 16px; }
     
     header { text-align: center; padding: 20px 0 10px; border-bottom: 2px solid var(--primary); margin-bottom: 20px; }
@@ -24,7 +24,7 @@
 
     .category-title { font-size: 16px; font-weight: bold; color: var(--primary); margin: 24px 0 12px; padding-left: 8px; border-left: 4px solid var(--primary); }
     
-    /* 상품 카드리스트 */
+    /* 상품 카드 */
     .product-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; background: #FFF; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
     .product-info { margin-bottom: 12px; }
     .product-name { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
@@ -32,36 +32,35 @@
     .product-price-row { display: flex; justify-content: space-between; align-items: center; }
     .product-price { font-size: 16px; font-weight: bold; color: var(--primary); }
 
-    /* 수량 조절 UI (+/- 및 직접 입력) */
+    /* 수량 조절 (+/- 및 직접 입력) UI */
     .qty-control { display: flex; align-items: center; border: 1px solid #DDD; border-radius: 8px; overflow: hidden; background: #FFF; }
     .qty-btn { width: 32px; height: 32px; background: #F1F1F1; border: none; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .qty-btn:active { background: #DDD; }
     .qty-input { width: 44px; height: 32px; border: none; text-align: center; font-size: 14px; font-weight: bold; outline: none; -moz-appearance: textfield; }
     .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-    /* 섹션 공통 스타일 */
+    /* 섹션 공통 */
     .section-box { background: #FFF; border: 1px solid #E0E0E0; padding: 16px; border-radius: var(--radius); margin-top: 24px; }
-    .section-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: var(--primary); }
+    .section-header { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: var(--primary); display: flex; align-items: center; justify-content: space-between; }
     
-    /* 폼 입력창 스타일 */
     .form-group { margin-bottom: 10px; }
     .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #555; }
-    .form-input { width: 100%; padding: 10px 12px; border: 1px solid #DDD; border-radius: 8px; font-size: 14px; outline: none; }
-    .form-input:focus { border-color: var(--primary); }
+    .form-input, .form-select { width: 100%; padding: 10px 12px; border: 1px solid #DDD; border-radius: 8px; font-size: 14px; outline: none; background: #FFF; }
+    .form-input:focus, .form-select:focus { border-color: var(--primary); }
     .address-btn { width: 100%; padding: 10px; background: #666; color: #FFF; border: none; border-radius: 8px; font-size: 13px; margin-bottom: 6px; cursor: pointer; }
 
-    /* 상품별 개별 배송지 카드 */
-    .dest-card { background: var(--primary-light); border: 1px solid #E0D8F0; border-radius: var(--radius); padding: 14px; margin-bottom: 16px; }
+    /* 개별 배송지 카드리스트 */
+    .dest-card { background: var(--primary-light); border: 1px solid #E0D8F0; border-radius: var(--radius); padding: 14px; margin-bottom: 16px; position: relative; }
     .dest-card-title { font-size: 14px; font-weight: bold; color: var(--primary); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px dashed #D0C5E8; display: flex; justify-content: space-between; align-items: center; }
+    
+    .add-btn { background: var(--primary); color: #FFF; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .remove-btn { background: #FF4D4D; color: #FFF; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; }
 
-    .radio-group { display: flex; gap: 16px; margin-bottom: 10px; }
-    .radio-label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; font-weight: 500; }
-
-    /* 결제 요약 */
+    /* 총 결제 금액 요약 */
     .cart-summary { background: #FFF; border: 2px solid var(--primary); border-radius: var(--radius); padding: 16px; margin-top: 24px; }
     .total-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: var(--primary); }
 
-    /* 고정 하단 주문 버튼 */
+    /* 하단 고정 버튼 */
     .footer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #FFF; padding: 12px 16px; border-top: 1px solid var(--border); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
     .footer-container { max-width: 500px; margin: 0 auto; }
     .submit-btn { width: 100%; padding: 14px; background: var(--primary); color: #FFF; border: none; border-radius: var(--radius); font-size: 16px; font-weight: bold; cursor: pointer; }
@@ -76,7 +75,7 @@
     <p>산지직송 신선한 포도를 직거래로 만나보세요</p>
   </header>
 
-  <!-- Step 1. 상품 선택 및 수량 입력 -->
+  <!-- 상품 수량 선택 (기존과 동일) -->
   <div class="category-title">샤인머스캣</div>
   <div class="product-card">
     <div class="product-info">
@@ -124,9 +123,9 @@
     </div>
   </div>
 
-  <!-- Step 2. 주문자 정보 입력 -->
+  <!-- 주문자 기본 정보 -->
   <div class="section-box">
-    <div class="section-title">1. 주문 신청자 정보</div>
+    <div class="section-header">1. 주문 신청자 정보</div>
     <div class="form-group">
       <label>주문자 성함</label>
       <input type="text" id="ordererName" class="form-input" placeholder="성함을 입력해 주세요">
@@ -137,17 +136,29 @@
     </div>
   </div>
 
-  <!-- Step 3. 선택한 상품별 배송지 입력란 (자동 생성) -->
+  <!-- 영역 A: 선물용 배송지 작성 구역 -->
   <div class="section-box">
-    <div class="section-title">2. 상품별 배송지 정보 입력</div>
-    <div id="destinationsContainer">
-      <div style="font-size: 13px; color: #888; text-align: center; padding: 20px 0;">
-        위에서 상품 수량을 선택하시면<br>상품별 배송지 입력란이 자동으로 나타납니다.
-      </div>
+    <div class="section-header">
+      <span>🎁 선물용 배송지 작성</span>
+      <button type="button" class="add-btn" onclick="addGiftDestination()">+ 배송지 추가</button>
+    </div>
+    <div id="giftContainer">
+      <!-- 선물용 배송지 항목들이 여기에 추가됩니다 -->
     </div>
   </div>
 
-  <!-- Step 4. 총 결제 금액 -->
+  <!-- 영역 B: 가정용(자택 수령) 배송지 작성 구역 -->
+  <div class="section-box">
+    <div class="section-header">
+      <span>🏡 가정용 (우리집 배송 / 방문 수령)</span>
+      <button type="button" class="add-btn" onclick="addHomeDestination()">+ 배송지 추가</button>
+    </div>
+    <div id="homeContainer">
+      <!-- 가정용 배송지 항목들이 여기에 추가됩니다 -->
+    </div>
+  </div>
+
+  <!-- 총 결제 금액 -->
   <div class="cart-summary">
     <div class="total-row">
       <span>총 결제 금액 (무료배송)</span>
@@ -164,23 +175,25 @@
 </div>
 
 <script>
-  // 상품 목록 데이터
+  // 상품 기본 정보
   const products = {
     p1: { name: "샤인머스캣 2kg", price: 30000, qty: 0 },
     p2: { name: "샤인머스캣 4kg", price: 55000, qty: 0 },
     p3: { name: "캠벨포도 3kg", price: 25000, qty: 0 }
   };
 
-  // 구글 스크립트 웹앱 URL (본인 URL로 변경하세요)
   const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE";
 
-  // 수량 조절 (+/-)
+  let giftCount = 0;
+  let homeCount = 0;
+
+  // 수량 변경 (+/-)
   function changeQty(id, delta) {
     let current = products[id].qty + delta;
     if (current < 0) current = 0;
     products[id].qty = current;
     document.getElementById(`qty-${id}`).value = current;
-    updateUI();
+    calculateTotal();
   }
 
   // 수량 직접 입력
@@ -188,124 +201,138 @@
     let parsed = parseInt(val, 10);
     if (isNaN(parsed) || parsed < 0) parsed = 0;
     products[id].qty = parsed;
-    updateUI();
+    calculateTotal();
   }
 
-  // 선택 수량에 따라 배송지 입력 폼 및 가격 업데이트
-  function updateUI() {
-    const container = document.getElementById('destinationsContainer');
-    const totalPriceEl = document.getElementById('totalPrice');
-    
-    // 기존 입력값 임시 보관 (수량 변경 시 기존 작성 중이던 배송지 유지용)
-    const savedData = {};
-    const existingCards = container.querySelectorAll('.dest-card');
-    existingCards.forEach(card => {
-      const idx = card.dataset.destIndex;
-      savedData[idx] = {
-        type: card.querySelector(`input[name="deliveryType_${idx}"]:checked`)?.value || "택배 배송",
-        name: card.querySelector(`.receiver-name`)?.value || "",
-        phone: card.querySelector(`.receiver-phone`)?.value || "",
-        zipcode: card.querySelector(`.receiver-zipcode`)?.value || "",
-        basic: card.querySelector(`.receiver-basic`)?.value || "",
-        detail: card.querySelector(`.receiver-detail`)?.value || "",
-        memo: card.querySelector(`.receiver-memo`)?.value || ""
-      };
-    });
+  // 총 금액 계산
+  function calculateTotal() {
+    let total = 0;
+    for (const key in products) {
+      total += products[key].price * products[key].qty;
+    }
+    document.getElementById('totalPrice').innerText = `${total.toLocaleString()}원`;
+  }
 
-    container.innerHTML = '';
-    let grandTotal = 0;
-    let cardIndex = 0;
-
+  // 상품 선택 옵션 HTML 생성
+  function getProductOptionsHTML() {
+    let html = `<option value="">-- 선물할 상품 선택 --</option>`;
     for (const id in products) {
-      const p = products[id];
-      if (p.qty > 0) {
-        grandTotal += p.price * p.qty;
-
-        // 개수만큼 각각 개별 배송지 입력 폼 생성
-        for (let i = 1; i <= p.qty; i++) {
-          cardIndex++;
-          const idx = cardIndex;
-          const prev = savedData[idx] || {};
-
-          const card = document.createElement('div');
-          card.className = 'dest-card';
-          card.dataset.destIndex = idx;
-          card.dataset.productName = p.name;
-
-          card.innerHTML = `
-            <div class="dest-card-title">
-              <span>🎁 [상품 ${idx}] ${p.name} ${p.qty > 1 ? '(' + i + '/' + p.qty + '번째 상자)' : ''}</span>
-            </div>
-            
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="deliveryType_${idx}" value="택배 배송" ${(!prev.type || prev.type === "택배 배송") ? "checked" : ""} onchange="toggleAddr(${idx}, true)">
-                택배 배송
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="deliveryType_${idx}" value="방문 수령" ${prev.type === "방문 수령" ? "checked" : ""} onchange="toggleAddr(${idx}, false)">
-                농장 방문 수령
-              </label>
-            </div>
-
-            <div class="form-group">
-              <label>받는 분 성함</label>
-              <input type="text" class="form-input receiver-name" value="${prev.name || ''}" placeholder="성함 입력">
-            </div>
-
-            <div class="form-group">
-              <label>받는 분 연락처</label>
-              <input type="tel" class="form-input receiver-phone" value="${prev.phone || ''}" placeholder="010-0000-0000">
-            </div>
-
-            <div id="addrBox_${idx}" style="display: ${prev.type === '방문 수령' ? 'none' : 'block'};">
-              <div class="form-group">
-                <label>배송지 주소</label>
-                <button type="button" class="address-btn" onclick="execDaumPostcode(${idx})">우편번호 / 주소 검색</button>
-                <input type="text" id="zipcode_${idx}" class="form-input receiver-zipcode" value="${prev.zipcode || ''}" placeholder="우편번호" readonly style="margin-bottom: 6px; background: #F9F9F9;">
-                <input type="text" id="basic_${idx}" class="form-input receiver-basic" value="${prev.basic || ''}" placeholder="기본 주소" readonly style="margin-bottom: 6px; background: #F9F9F9;">
-                <input type="text" id="detail_${idx}" class="form-input receiver-detail" value="${prev.detail || ''}" placeholder="상세 주소 (동, 호수 등)">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>배송 요청사항 (선택)</label>
-              <input type="text" class="form-input receiver-memo" value="${prev.memo || ''}" placeholder="예: 문 앞에 놓아주세요">
-            </div>
-          `;
-
-          container.appendChild(card);
-        }
-      }
+      html += `<option value="${products[id].name}">${products[id].name} (${products[id].price.toLocaleString()}원)</option>`;
     }
-
-    if (cardIndex === 0) {
-      container.innerHTML = `
-        <div style="font-size: 13px; color: #888; text-align: center; padding: 20px 0;">
-          위에서 상품 수량을 선택하시면<br>상품별 배송지 입력란이 자동으로 나타납니다.
-        </div>`;
-    }
-
-    totalPriceEl.innerText = `${grandTotal.toLocaleString()}원`;
+    return html;
   }
 
-  // 택배/방문 수령에 따른 주소창 토글
-  function toggleAddr(idx, isDelivery) {
-    document.getElementById(`addrBox_${idx}`).style.display = isDelivery ? 'block' : 'none';
+  // [🎁 선물용] 배송지 추가
+  function addGiftDestination() {
+    giftCount++;
+    const id = giftCount;
+    const container = document.getElementById('giftContainer');
+    
+    const card = document.createElement('div');
+    card.className = 'dest-card';
+    card.id = `gift_card_${id}`;
+    card.innerHTML = `
+      <div class="dest-card-title">
+        <span>🎁 선물 배송지 #${id}</span>
+        <button type="button" class="remove-btn" onclick="removeDest('gift_card_${id}')">삭제</button>
+      </div>
+      
+      <div class="form-group">
+        <label>선물할 상품 선택</label>
+        <select class="form-select gift-product">${getProductOptionsHTML()}</select>
+      </div>
+
+      <div class="form-group">
+        <label>받는 분 성함</label>
+        <input type="text" class="form-input gift-name" placeholder="받는 분 성함">
+      </div>
+
+      <div class="form-group">
+        <label>받는 분 연락처</label>
+        <input type="tel" class="form-input gift-phone" placeholder="010-0000-0000">
+      </div>
+
+      <div class="form-group">
+        <label>배송지 주소</label>
+        <button type="button" class="address-btn" onclick="execDaumPostcode('gift_zip_${id}', 'gift_basic_${id}', 'gift_detail_${id}')">우편번호 / 주소 검색</button>
+        <input type="text" id="gift_zip_${id}" class="form-input gift-zipcode" placeholder="우편번호" readonly style="margin-bottom:6px; background:#F9F9F9;">
+        <input type="text" id="gift_basic_${id}" class="form-input gift-basic" placeholder="기본 주소" readonly style="margin-bottom:6px; background:#F9F9F9;">
+        <input type="text" id="gift_detail_${id}" class="form-input gift-detail" placeholder="상세 주소 (동, 호수 등)">
+      </div>
+
+      <div class="form-group">
+        <label>선물 메세지 / 요청사항 (선택)</label>
+        <input type="text" class="form-input gift-memo" placeholder="예: 생일 축하해요! / 문 앞에 놓아주세요">
+      </div>
+    `;
+    container.appendChild(card);
   }
 
-  // 카카오 주소 검색
-  function execDaumPostcode(idx) {
+  // [🏡 가정용] 배송지 추가
+  function addHomeDestination() {
+    homeCount++;
+    const id = homeCount;
+    const container = document.getElementById('homeContainer');
+    
+    const card = document.createElement('div');
+    card.className = 'dest-card';
+    card.id = `home_card_${id}`;
+    card.innerHTML = `
+      <div class="dest-card-title">
+        <span>🏡 우리집 배송/수령 #${id}</span>
+        <button type="button" class="remove-btn" onclick="removeDest('home_card_${id}')">삭제</button>
+      </div>
+
+      <div class="form-group">
+        <label>배송 / 수령 방식</label>
+        <select class="form-select home-type" onchange="toggleHomeAddress(${id}, this.value)">
+          <option value="택배 배송">택배 배송 (우리집)</option>
+          <option value="농장 방문 수령">농장 방문 수령</option>
+        </select>
+      </div>
+
+      <div id="home_addr_box_${id}">
+        <div class="form-group">
+          <label>우리집 주소</label>
+          <button type="button" class="address-btn" onclick="execDaumPostcode('home_zip_${id}', 'home_basic_${id}', 'home_detail_${id}')">우편번호 / 주소 검색</button>
+          <input type="text" id="home_zip_${id}" class="form-input home-zipcode" placeholder="우편번호" readonly style="margin-bottom:6px; background:#F9F9F9;">
+          <input type="text" id="home_basic_${id}" class="form-input home-basic" placeholder="기본 주소" readonly style="margin-bottom:6px; background:#F9F9F9;">
+          <input type="text" id="home_detail_${id}" class="form-input home-detail" placeholder="상세 주소 (동, 호수 등)">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>요청사항 (선택)</label>
+        <input type="text" class="form-input home-memo" placeholder="예: 문 앞에 놓아주세요">
+      </div>
+    `;
+    container.appendChild(card);
+  }
+
+  // 배송지 카드리스트 삭제
+  function removeDest(cardId) {
+    const el = document.getElementById(cardId);
+    if (el) el.remove();
+  }
+
+  // 방문 수령 선택 시 주소창 토글
+  function toggleHomeAddress(id, type) {
+    const box = document.getElementById(`home_addr_box_${id}`);
+    box.style.display = (type === "농장 방문 수령") ? 'none' : 'block';
+  }
+
+  // 다음 카카오 주소검색 API
+  function execDaumPostcode(zipId, basicId, detailId) {
     new daum.Postcode({
       oncomplete: function(data) {
-        document.getElementById(`zipcode_${idx}`).value = data.zonecode;
-        document.getElementById(`basic_${idx}`).value = data.address;
-        document.getElementById(`detail_${idx}`).focus();
+        document.getElementById(zipId).value = data.zonecode;
+        document.getElementById(basicId).value = data.address;
+        document.getElementById(detailId).focus();
       }
     }).open();
   }
 
-  // 주문 전송
+  // 최종 주문 제출
   function submitOrder() {
     const ordererName = document.getElementById('ordererName').value.trim();
     const ordererPhone = document.getElementById('ordererPhone').value.trim();
@@ -313,43 +340,71 @@
     if (!ordererName) { alert("주문 신청자 성함을 입력해 주세요."); return; }
     if (!ordererPhone) { alert("주문 신청자 연락처를 입력해 주세요."); return; }
 
-    const cards = document.querySelectorAll('.dest-card');
-    if (cards.length === 0) {
-      alert("최소 1개 이상의 상품 수량을 선택해 주세요.");
+    // 수량 체크
+    let totalQty = 0;
+    let selectedProductsSummary = [];
+    for (const key in products) {
+      if (products[key].qty > 0) {
+        totalQty += products[key].qty;
+        selectedProductsSummary.push(`${products[key].name} ${products[key].qty}개`);
+      }
+    }
+
+    if (totalQty === 0) {
+      alert("최소 1개 이상의 포도 수량을 선택해 주세요.");
       return;
     }
 
-    let itemsList = [];
+    // 선물용 배송지 수집
+    let giftList = [];
     let isError = false;
-
-    cards.forEach((card, i) => {
+    document.querySelectorAll('#giftContainer .dest-card').forEach((card, i) => {
       if (isError) return;
-      const idx = card.dataset.destIndex;
-      const prodName = card.dataset.productName;
-      const delType = card.querySelector(`input[name="deliveryType_${idx}"]:checked`).value;
-      const rName = card.querySelector('.receiver-name').value.trim();
-      const rPhone = card.querySelector('.receiver-phone').value.trim();
-      const zipcode = card.querySelector('.receiver-zipcode').value;
-      const basic = card.querySelector('.receiver-basic').value;
-      const detail = card.querySelector('.receiver-detail').value.trim();
-      const memo = card.querySelector('.receiver-memo').value.trim();
+      const pName = card.querySelector('.gift-product').value;
+      const name = card.querySelector('.gift-name').value.trim();
+      const phone = card.querySelector('.gift-phone').value.trim();
+      const basic = card.querySelector('.gift-basic').value;
+      const detail = card.querySelector('.gift-detail').value.trim();
+      const zip = card.querySelector('.gift-zipcode').value;
+      const memo = card.querySelector('.gift-memo').value.trim();
 
-      if (!rName) { alert(`[상품 ${idx}] 받는 분 성함을 입력해 주세요.`); isError = true; return; }
-      if (!rPhone) { alert(`[상품 ${idx}] 받는 분 연락처를 입력해 주세요.`); isError = true; return; }
-      if (delType === "택배 배송" && (!basic || !detail)) {
-        alert(`[상품 ${idx}] 배송지 주소를 정확히 입력해 주세요.`); isError = true; return;
-      }
+      if (!pName) { alert(`선물 배송지 #${i+1}의 상품을 선택해 주세요.`); isError = true; return; }
+      if (!name) { alert(`선물 배송지 #${i+1}의 받는 분 성함을 입력해 주세요.`); isError = true; return; }
+      if (!phone) { alert(`선물 배송지 #${i+1}의 받는 분 연락처를 입력해 주세요.`); isError = true; return; }
+      if (!basic || !detail) { alert(`선물 배송지 #${i+1}의 주소를 입력해 주세요.`); isError = true; return; }
 
-      const addrStr = delType === "택배 배송" ? `[${zipcode}] ${basic} ${detail}` : "농장 방문 수령";
-      itemsList.push(`[상품${idx}: ${prodName}] 받는분: ${rName}(${rPhone}) / 수령: ${delType} / 주소: ${addrStr} / 요청: ${memo || '없음'}`);
+      giftList.push(`[선물#${i+1}: ${pName}] 받는분: ${name}(${phone}) / 주소: [${zip}] ${basic} ${detail} / 메모: ${memo || '없음'}`);
     });
 
     if (isError) return;
 
+    // 가정용 배송지 수집
+    let homeList = [];
+    document.querySelectorAll('#homeContainer .dest-card').forEach((card, i) => {
+      if (isError) return;
+      const type = card.querySelector('.home-type').value;
+      const basic = card.querySelector('.home-basic').value;
+      const detail = card.querySelector('.home-detail').value.trim();
+      const zip = card.querySelector('.home-zipcode').value;
+      const memo = card.querySelector('.home-memo').value.trim();
+
+      if (type === "택배 배송" && (!basic || !detail)) {
+        alert(`가정용 배송지 #${i+1}의 주소를 입력해 주세요.`); isError = true; return;
+      }
+
+      const addrStr = (type === "택배 배송") ? `[${zip}] ${basic} ${detail}` : "농장 방문 수령";
+      homeList.push(`[가정용#${i+1}: ${type}] 주소: ${addrStr} / 메모: ${memo || '없음'}`);
+    });
+
+    if (isError) return;
+
+    // 전체 전달 데이타 조합
     const payload = {
       ordererName: ordererName,
       ordererPhone: ordererPhone,
-      itemsSummary: itemsList.join(" || "),
+      orderedProducts: selectedProductsSummary.join(", "),
+      giftDestinations: giftList.length > 0 ? giftList.join(" || ") : "없음",
+      homeDestinations: homeList.length > 0 ? homeList.join(" || ") : "없음",
       totalPrice: document.getElementById('totalPrice').innerText,
       orderDate: new Date().toLocaleString("ko-KR")
     };
