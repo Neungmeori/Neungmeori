@@ -108,18 +108,16 @@
         .method-guide-box { background: #f0f7f4; border: 1px solid #b7e4c7; padding: 10px 12px; border-radius: 6px; font-size: 0.8rem; color: #2d6a4f; margin-top: 8px; line-height: 1.4; }
         
         .address-card { background: #fdfdfd; border: 1px solid #c8e6c9; padding: 12px; border-radius: 8px; margin-bottom: 12px; position: relative; }
-        .address-card.gift-card { background: #fefcf7; border-color: #ffe0b2; }
         .address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: var(--primary-color); }
-        .gift-card .address-card-header { color: #e65100; }
         
         .remove-addr-btn { background: #ffcdd2; color: #c62828; border: none; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
         .add-addr-btn { width: 100%; background: #e8f5e9; color: var(--primary-color); border: 1px dashed var(--primary-color); padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; margin-bottom: 12px; }
-        .add-addr-btn.gift-add { background: #fff3e0; color: #e65100; border-color: #ffa726; }
         .add-addr-btn:disabled { background: #eee; color: #aaa; border-color: #ccc; cursor: not-allowed; }
 
         .bank-info-box { background: #fff8e1; border: 1px dashed #ffa000; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
         .bank-info-box p { font-size: 0.85rem; color: #5d4037; line-height: 1.4; }
         .bank-account { font-weight: bold; font-size: 1rem; color: #d84315; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .payment-sub-notice { font-size: 0.8rem; color: #c62828; font-weight: bold; margin-top: 6px; display: block; }
         .copy-btn { background: white; border: 1px solid #d84315; color: #d84315; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
         
         .cart-summary-box { background: #f8f9fa; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; }
@@ -165,13 +163,14 @@
                     <span id="accountText"></span>
                     <button class="copy-btn" onclick="copyAccount()">복사</button>
                 </div>
+                <span class="payment-sub-notice">결제는 현금/계좌이체 가능 (카드결제 X)</span>
             </div>
 
             <form id="orderForm" onsubmit="submitOrder(event)">
                 <div class="form-group">
                     <label>수령 방법 선택 *</label>
-                    <div class="radio-group">
-                        <label class="radio-label">
+                    <div class="radio-group" id="receiveMethodGroup">
+                        <label class="radio-label" id="labelDelivery">
                             <input type="radio" name="receiveMethod" value="택배 배송" checked onchange="handleMethodChange()">
                             택배 배송
                         </label>
@@ -198,7 +197,7 @@
                 </div>
 
                 <div id="deliverySection">
-                    <!-- 영역 1: 가정용 배송지 구역 (가정용 4kg 전용) -->
+                    <!-- 영역: 배송지 구역 -->
                     <div class="form-section-title">
                         <span>🏡 배송지 정보</span>
                         <label class="same-check-wrap">
@@ -207,13 +206,6 @@
                     </div>
                     <div id="homeAddressContainer"></div>
                     <button type="button" class="add-addr-btn" id="addHomeBtn" onclick="addHomeAddressCard()">+ 배송지 추가하기</button>
-
-                    <!-- 영역 2: 선물용 배송지 구역 (선물용 4kg 전용) -->
-                    <div class="form-section-title" id="giftSectionTitle" style="display:none;">
-                        <span>🎁 선물용 배송지 (4kg 선물용 전용)</span>
-                    </div>
-                    <div id="giftAddressContainer"></div>
-                    <button type="button" class="add-addr-btn gift-add" id="addGiftBtn" onclick="addGiftAddressCard()" style="display:none;">+ 선물용 배송지 추가하기</button>
                 </div>
 
                 <!-- 요청사항 위에 전체 선택된 상품 및 상품 개수 요약 정보 배치 -->
@@ -239,20 +231,20 @@
 
         document.getElementById('accountText').innerText = BANK_ACCOUNT_INFO;
 
-        // 상품 목록 재구성 (요청하신 사진 및 데이터 적용)
+        // 상품 목록 (샤인머스켓 2kg 3수는 pickupOnly: true 지정)
         const products = [
             { 
                 id: 1, 
                 name: "샤인머스켓 2kg (3수)", 
                 price: 20000, 
-                desc: "알이 굵은 3수 구성 (픽업/택배 모두 가능)", 
+                desc: "알이 굵은 3수 구성 (픽업 전용)", 
                 images: [
                     "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80",
                     "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80"
                 ], 
-                badge: "픽업/택배",
+                badge: "픽업전용",
                 active: true,
-                pickupOnly: false
+                pickupOnly: true
             },
             { 
                 id: 2, 
@@ -334,7 +326,6 @@
         let cart = { 1: 0, 2: 0, 3: 0 };
         let currentSlideState = {};
         let homeCardSeq = 0;
-        let giftCardSeq = 0;
 
         function removeNetlifyBadge() {
             const selectors = ['[class*="netlify"]', '[id*="netlify"]', '.netlify-badge', 'iframe[src*="netlify"]', 'a[href*="netlify.com"]'];
@@ -362,6 +353,21 @@
 
         function formatPhoneInput(input) {
             input.value = formatPhoneNumber(input.value);
+        }
+
+        function hasOnlyPickupItems() {
+            let hasPickupOnly = false;
+            let hasOtherActive = false;
+            for (const id in cart) {
+                if (cart[id] > 0) {
+                    const p = products.find(prod => prod.id == id);
+                    if (p && p.active) {
+                        if (p.pickupOnly) hasPickupOnly = true;
+                        else hasOtherActive = true;
+                    }
+                }
+            }
+            return hasPickupOnly && !hasOtherActive;
         }
 
         function getSelectedReceiveMethod() {
@@ -480,7 +486,7 @@
             const method = getSelectedReceiveMethod();
             let currentShipping = 0;
 
-            if (totalItems > 0 && method === '택배 배송') {
+            if (totalItems > 0 && method === '택배 배송' && !hasOnlyPickupItems()) {
                 currentShipping = (productTotal >= FREE_SHIPPING_LIMIT) ? 0 : (totalItems * FEE_PER_BOX);
             }
 
@@ -489,18 +495,23 @@
 
         function updateCartBar() {
             const { totalItems, productTotal, currentShipping, grandTotal } = calculateCartTotals();
-            const method = getSelectedReceiveMethod();
+            const onlyPickup = hasOnlyPickupItems();
 
             document.getElementById('cartCount').innerText = `선택한 상품: ${totalItems}개`;
             
-            if (method === '택배 배송') {
-                if (productTotal >= FREE_SHIPPING_LIMIT && totalItems > 0) {
-                    document.getElementById('cartShipping').innerText = `배송비: 0원 (10만원 이상 무료배송 🎉)`;
-                } else {
-                    document.getElementById('cartShipping').innerText = `배송비: ${currentShipping.toLocaleString()}원 (${totalItems}박스 x 2천원)`;
-                }
+            if (onlyPickup) {
+                document.getElementById('cartShipping').innerText = `배송비: 0원 (픽업 전용 상품 포함)`;
             } else {
-                document.getElementById('cartShipping').innerText = `배송비: 0원 (방문수령)`;
+                const method = getSelectedReceiveMethod();
+                if (method === '택배 배송') {
+                    if (productTotal >= FREE_SHIPPING_LIMIT && totalItems > 0) {
+                        document.getElementById('cartShipping').innerText = `배송비: 0원 (10만원 이상 무료배송 🎉)`;
+                    } else {
+                        document.getElementById('cartShipping').innerText = `배송비: ${currentShipping.toLocaleString()}원 (${totalItems}박스 x 2천원)`;
+                    }
+                } else {
+                    document.getElementById('cartShipping').innerText = `배송비: 0원 (방문수령)`;
+                }
             }
 
             document.getElementById('cartTotal').innerText = `${grandTotal.toLocaleString()}원`;
@@ -552,7 +563,8 @@
                 }
             });
 
-            document.getElementById('addHomeBtn').disabled = getRemainingQty() <= 0;
+            const addBtn = document.getElementById('addHomeBtn');
+            if (addBtn) addBtn.disabled = getRemainingQty() <= 0;
         }
 
         function execDaumPostcode(cardId) {
@@ -569,7 +581,7 @@
 
         function addHomeAddressCard() {
             if (getRemainingQty() <= 0) {
-                alert('배송지에 지정할 남은 상품 수량이 없습니다.');
+                alert('배송지에 지정되지 않은 상품 수량이 없습니다.');
                 return;
             }
 
@@ -643,7 +655,8 @@
 
         function handleMethodChange() {
             const method = getSelectedReceiveMethod();
-            document.getElementById('deliverySection').style.display = (method === '택배 배송') ? 'block' : 'none';
+            const onlyPickup = hasOnlyPickupItems();
+            document.getElementById('deliverySection').style.display = (method === '택배 배송' && !onlyPickup) ? 'block' : 'none';
             updateCartBar();
             if (document.getElementById('orderModal').style.display === 'flex') {
                 renderSummaryBox();
@@ -674,6 +687,7 @@
 
             const { currentShipping, grandTotal } = calculateCartTotals();
             const method = getSelectedReceiveMethod();
+            const onlyPickup = hasOnlyPickupItems();
 
             summaryHTML += `
                 <div style="border-top: 1px dashed var(--border-color); margin-top: 6px; padding-top: 6px;">
@@ -682,7 +696,7 @@
                         <span>${productTotal.toLocaleString()}원</span>
                     </div>
                     <div class="cart-summary-item">
-                        <span>배송비 ${method === '방문수령' ? '(방문수령)' : ''}</span>
+                        <span>배송비 ${onlyPickup || method === '방문수령' ? '(방문수령)' : ''}</span>
                         <span>${currentShipping.toLocaleString()}원</span>
                     </div>
                     <div class="cart-summary-item" style="font-weight: bold; color: var(--accent-color); font-size: 0.95rem; margin-top: 4px;">
@@ -697,13 +711,29 @@
 
         function openOrderModal() {
             document.getElementById('homeAddressContainer').innerHTML = '';
-            document.getElementById('giftAddressContainer').innerHTML = '';
             homeCardSeq = 0;
-            giftCardSeq = 0;
 
-            const method = getSelectedReceiveMethod();
-            if (method === '택배 배송') {
-                addHomeAddressCard();
+            const onlyPickup = hasOnlyPickupItems();
+            const radios = document.getElementsByName('receiveMethod');
+
+            if (onlyPickup) {
+                // 픽업 전용 상품일 경우 방문 수령으로 강제 고정 및 라디오 비활성화
+                for (const r of radios) {
+                    if (r.value === '방문 수령') r.checked = true;
+                }
+                document.getElementById('receiveMethodGroup').style.opacity = '0.6';
+                for (const r of radios) r.disabled = true;
+                document.getElementById('deliverySection').style.display = 'none';
+            } else {
+                for (const r of radios) r.disabled = false;
+                document.getElementById('receiveMethodGroup').style.opacity = '1';
+                const method = getSelectedReceiveMethod();
+                if (method === '택배 배송') {
+                    document.getElementById('deliverySection').style.display = 'block';
+                    addHomeAddressCard();
+                } else {
+                    document.getElementById('deliverySection').style.display = 'none';
+                }
             }
 
             renderSummaryBox();
@@ -716,10 +746,11 @@
         async function submitOrder(e) {
             e.preventDefault();
 
-            const method = getSelectedReceiveMethod();
+            const onlyPickup = hasOnlyPickupItems();
+            const method = onlyPickup ? '방문 수령' : getSelectedReceiveMethod();
             let receiverNames = [], receiverPhones = [], addresses = [];
 
-            if (method === '택배 배송') {
+            if (method === '택배 배송' && !onlyPickup) {
                 const rem = getRemainingQty();
                 if (rem > 0) {
                     alert(`배송지에 지정되지 않은 상품이 ${rem}개 남아있습니다.`);
