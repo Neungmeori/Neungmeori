@@ -52,11 +52,13 @@
         .product-badge { display: inline-block; background: var(--primary-light); color: var(--primary-color); font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; margin-bottom: 6px; }
         .product-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
         .product-desc { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px; line-height: 1.4; }
-        .product-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .product-bottom { display: flex; flex-direction: column; gap: 8px; }
         .product-price { font-size: 1.15rem; font-weight: 800; color: var(--primary-color); }
-        .qty-controls { display: flex; align-items: center; gap: 10px; background: #f1f3f5; padding: 4px 8px; border-radius: 8px; }
-        .qty-btn { border: none; background: white; width: 28px; height: 28px; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .qty-val { font-size: 0.95rem; font-weight: 700; min-width: 18px; text-align: center; }
+        
+        /* 박스형 수량 선택 디자인 */
+        .qty-box-group { display: flex; gap: 6px; margin-top: 4px; }
+        .qty-box { flex: 1; text-align: center; padding: 8px 0; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; font-weight: 700; color: var(--text-main); background: #ffffff; cursor: pointer; transition: all 0.2s ease; }
+        .qty-box.active { background: var(--primary-color); color: white; border-color: var(--primary-color); box-shadow: 0 2px 4px rgba(46,125,50,0.2); }
         
         .cart-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; padding: 12px 16px; border-top: 1px solid var(--border-color); box-shadow: 0 -4px 12px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; z-index: 900; }
         .cart-info { display: flex; flex-direction: column; }
@@ -90,7 +92,7 @@
 
         .item-select-row { display: flex; gap: 8px; margin-bottom: 6px; }
         .item-select-row select { flex: 2; }
-        .item-select-row input { flex: 1; text-align: center; }
+        .item-select-row select.addr-qty-box { flex: 1; text-align: center; }
 
         .order-summary { background: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.875rem; }
         .bank-info-box { background: #fff8e1; border: 1px dashed #ffa000; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
@@ -245,7 +247,7 @@
             const container = document.getElementById('productList');
             container.innerHTML = '';
             products.forEach(p => {
-                const qty = cart[p.id] || 0;
+                const selectedQty = cart[p.id] || 0;
                 if (!(p.id in currentSlideState)) currentSlideState[p.id] = 0;
                 const currentIdx = currentSlideState[p.id];
 
@@ -258,6 +260,13 @@
                     <button class="slider-btn prev" onclick="moveSlide(${p.id}, -1)">&lt;</button>
                     <button class="slider-btn next" onclick="moveSlide(${p.id}, 1)">&gt;</button>
                 ` : '';
+
+                // 박스형 수량 선택 버튼 생성 (0개, 1개, 2개, 3개, 4개, 5개)
+                let qtyBoxesHTML = [0, 1, 2, 3, 4, 5].map(num => `
+                    <div class="qty-box ${selectedQty === num ? 'active' : ''}" onclick="selectQtyBox(${p.id}, ${num})">
+                        ${num === 0 ? '선택 안함' : num + '개'}
+                    </div>
+                `).join('');
 
                 card.innerHTML = `
                     <div class="slider-container">
@@ -273,10 +282,8 @@
                         <div class="product-desc">${p.desc}</div>
                         <div class="product-bottom">
                             <div class="product-price">${p.price.toLocaleString()}원</div>
-                            <div class="qty-controls">
-                                <button class="qty-btn" onclick="updateQty(${p.id}, -1)">-</button>
-                                <span class="qty-val">${qty}</span>
-                                <button class="qty-btn" onclick="updateQty(${p.id}, 1)">+</button>
+                            <div class="qty-box-group">
+                                ${qtyBoxesHTML}
                             </div>
                         </div>
                     </div>
@@ -286,11 +293,12 @@
             updateCartBar();
         }
 
-        function updateQty(id, change) {
-            const currentQty = cart[id] || 0;
-            const newQty = currentQty + change;
-            if (newQty <= 0) delete cart[id];
-            else cart[id] = newQty;
+        function selectQtyBox(pId, num) {
+            if (num === 0) {
+                delete cart[pId];
+            } else {
+                cart[pId] = num;
+            }
             renderProducts();
         }
 
@@ -338,7 +346,7 @@
 
             cards.forEach(card => {
                 const pId = card.querySelector('.addr-item-select')?.value;
-                const qtyInput = card.querySelector('.addr-qty-input')?.value;
+                const qtyInput = card.querySelector('.addr-qty-box')?.value;
 
                 if (pId && qtyInput) {
                     const count = parseInt(qtyInput) || 0;
@@ -356,15 +364,15 @@
             
             cards.forEach((card) => {
                 const select = card.querySelector('.addr-item-select');
-                const qtyInput = card.querySelector('.addr-qty-input');
+                const qtySelect = card.querySelector('.addr-qty-box');
                 const currentSelectedPid = select.value;
-                const currentQty = parseInt(qtyInput.value) || 1;
+                const currentQty = parseInt(qtySelect.value) || 1;
 
                 let tempRemaining = { ...cart };
                 cards.forEach(otherCard => {
                     if (otherCard !== card) {
                         const otherPid = otherCard.querySelector('.addr-item-select')?.value;
-                        const otherQty = parseInt(otherCard.querySelector('.addr-qty-input')?.value) || 0;
+                        const otherQty = parseInt(otherCard.querySelector('.addr-qty-box')?.value) || 0;
                         if (otherPid && tempRemaining[otherPid]) {
                             tempRemaining[otherPid] -= otherQty;
                             if (tempRemaining[otherPid] <= 0) delete tempRemaining[otherPid];
@@ -390,19 +398,29 @@
                 if (validSelection) {
                     select.value = currentSelectedPid;
                     const maxAvail = tempRemaining[currentSelectedPid] || 1;
-                    qtyInput.max = maxAvail;
-                    if (currentQty > maxAvail) qtyInput.value = maxAvail;
+                    renderQtyOptions(qtySelect, maxAvail, currentQty);
                 } else if (select.options.length > 0) {
                     select.selectedIndex = 0;
                     const newPid = select.value;
-                    qtyInput.max = tempRemaining[newPid] || 1;
-                    qtyInput.value = 1;
+                    const maxAvail = tempRemaining[newPid] || 1;
+                    renderQtyOptions(qtySelect, maxAvail, 1);
                 }
             });
 
             const globalRemaining = getRemainingCart();
             const totalRemainingCount = Object.values(globalRemaining).reduce((a, b) => a + b, 0);
             document.getElementById('addAddrBtn').disabled = totalRemainingCount === 0;
+        }
+
+        function renderQtyOptions(selectEl, maxVal, currentVal) {
+            selectEl.innerHTML = '';
+            for (let i = 1; i <= maxVal; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.innerText = `${i}개`;
+                if (i === currentVal) opt.selected = true;
+                selectEl.appendChild(opt);
+            }
         }
 
         function addAddressCard() {
@@ -431,7 +449,7 @@
                     <label>배송할 상품 및 수량 선택 *</label>
                     <div class="item-select-row">
                         <select class="addr-item-select" onchange="updateAllAddressCardsOptions()" required></select>
-                        <input type="number" class="addr-qty-input" min="1" value="1" oninput="handleQtyInputChange(this)" required>
+                        <select class="addr-qty-box" onchange="updateAllAddressCardsOptions()" required></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -448,14 +466,6 @@
                 </div>
             `;
             container.appendChild(card);
-            updateAllAddressCardsOptions();
-        }
-
-        function handleQtyInputChange(input) {
-            const max = parseInt(input.max) || 1;
-            let val = parseInt(input.value) || 1;
-            if (val > max) input.value = max;
-            if (val < 1) input.value = 1;
             updateAllAddressCardsOptions();
         }
 
@@ -540,7 +550,7 @@
                 cards.forEach((card, idx) => {
                     const pId = card.querySelector('.addr-item-select').value;
                     const product = products.find(p => p.id == pId);
-                    const qty = card.querySelector('.addr-qty-input').value;
+                    const qty = card.querySelector('.addr-qty-box').value;
                     const name = card.querySelector('.addr-name').value.trim();
                     const phone = formatPhoneNumber(card.querySelector('.addr-phone').value.trim());
                     const addr = card.querySelector('.addr-text').value.trim();
@@ -606,7 +616,7 @@
                 submitBtn.disabled = false;
             }
         }
-        
+
         renderProducts();
     </script>
 </body>
