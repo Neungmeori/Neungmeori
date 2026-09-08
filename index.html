@@ -22,9 +22,13 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 100px; max-width: 500px; margin: 0 auto; min-height: 100vh; position: relative; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
         
-        /* 외부 배너 및 알림 요소 완전 제거 */
-        [class*="notify"], [id*="notify"], [class*="banner"], .notice-bar {
+        /* 알림 및 Netlify 자동 배너 강제 숨김 */
+        [class*="notify"], [id*="notify"], [class*="banner"], .notice-bar,
+        [class*="netlify"], [id*="netlify"], .netlify-badge, iframe[src*="netlify"], a[href*="netlify.com"] {
             display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
 
         header { background-color: var(--primary-color); color: white; padding: 18px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -200,6 +204,29 @@
         let cart = {};
         let currentSlideState = {};
         let addressCardCount = 0;
+
+        // Netlify 배너 강제 삭제 스크립트
+        function removeNetlifyBadge() {
+            const selectors = [
+                '[class*="netlify"]',
+                '[id*="netlify"]',
+                '.netlify-badge',
+                'iframe[src*="netlify"]',
+                'a[href*="netlify.com"]'
+            ];
+            
+            selectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    if (!el.classList.contains('cart-bar') && !el.classList.contains('order-btn')) {
+                        el.remove();
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', removeNetlifyBadge);
+        window.addEventListener('load', removeNetlifyBadge);
+        setInterval(removeNetlifyBadge, 500);
 
         function formatPhoneNumber(value) {
             if (!value) return "";
