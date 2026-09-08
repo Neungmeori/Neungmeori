@@ -94,7 +94,7 @@
 
         .name-qty-row { display: flex; gap: 8px; align-items: flex-end; }
         .name-qty-row .name-field { flex: 2; }
-        .name-qty-row .qty-field { flex: 1; }
+        .name-qty-row .qty-field { flex: 1.5; }
         
         .radio-group { display: flex; gap: 10px; margin-top: 4px; }
         .radio-label { flex: 1; display: flex; align-items: center; gap: 8px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; background: #fafafa; transition: all 0.2s; }
@@ -231,7 +231,6 @@
 
         document.getElementById('accountText').innerText = BANK_ACCOUNT_INFO;
 
-        // 상품 목록 (샤인머스켓 2kg 3수는 pickupOnly: true 지정)
         const products = [
             { 
                 id: 1, 
@@ -519,52 +518,92 @@
         }
 
         function getTotalSelectedCount() {
-            return (cart[1] || 0) + (cart[2] || 0) + (cart[3] || 0);
+            let sum = 0;
+            for (const id in cart) {
+                if (cart[id] > 0) {
+                    const p = products.find(prod => prod.id == id);
+                    if (p && p.active) sum += cart[id];
+                }
+            }
+            return sum;
         }
 
-        function getRemainingQty() {
-            const totalSelected = getTotalSelectedCount();
+        function getAssignedCountForProduct(productId, excludeCardId = null) {
             let assigned = 0;
-
             const cards = document.querySelectorAll('.address-card');
             cards.forEach(card => {
-                const qtySelect = card.querySelector('.addr-qty-box');
-                assigned += parseInt(qtySelect?.value) || 0;
+                if (excludeCardId && card.id === excludeCardId) return;
+                const select = card.querySelector('.addr-item-select');
+                if (select) {
+                    const [pId, qty] = select.value.split('_');
+                    if (parseInt(pId) === productId) {
+                        assigned += parseInt(qty) || 0;
+                    }
+                }
             });
-
-            return totalSelected - assigned;
+            return assigned;
         }
 
         function updateAllAddressCardsOptions() {
             const cards = document.querySelectorAll('.address-card');
             
             cards.forEach(card => {
-                const qtySelect = card.querySelector('.addr-qty-box');
-                if (!qtySelect) return;
+                const select = card.querySelector('.addr-item-select');
+                if (!select) return;
 
-                const currentVal = parseInt(qtySelect.value) || 0;
-                const rem = getRemainingQty();
-                const maxVal = rem + currentVal;
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">-- 상품 및 수량 선택 --</option>';
 
-                qtySelect.innerHTML = '';
-                if (maxVal === 0) {
-                    const opt = document.createElement('option');
-                    opt.value = 0;
-                    opt.innerText = '0개';
-                    qtySelect.appendChild(opt);
-                } else {
-                    for (let i = 1; i <= maxVal; i++) {
-                        const opt = document.createElement('option');
-                        opt.value = i;
-                        opt.innerText = `${i}개`;
-                        if (i === currentVal) opt.selected = true;
-                        qtySelect.appendChild(opt);
+                for (const id in cart) {
+                    const maxQty = cart[id] || 0;
+                    if (maxQty > 0) {
+                        const product = products.find(p => p.id == id);
+                        if (product && product.active) {
+                            const alreadyAssigned = getAssignedCountForProduct(parseInt(id), card.id);
+                            const availableQty = maxQty - alreadyAssigned;
+
+                            // 현재 카드에서 이미 선택한 수량만큼은 가용량에 더해줌
+                            let currentCardQty = 0;
+                            if (currentValue) {
+                                const [pId, qty] = currentValue.split('_');
+                                if (parseInt(pId) === parseInt(id)) {
+                                    currentCardQty = parseInt(qty) || 0;
+                                }
+                            }
+                            const maxSelectable = availableQty + currentCardQty;
+
+                            for (let i = 1; i <= maxSelectable; i++) {
+                                const optVal = `${id}_${i}`;
+                                const opt = document.createElement('option');
+                                opt.value = optVal;
+                                opt.innerText = `${product.name} - ${i}개`;
+                                if (optVal === currentValue) {
+                                    opt.selected = true;
+                                }
+                                select.appendChild(opt);
+                            }
+                        }
                     }
                 }
             });
 
+            // 모든 장바구니 상품이 배송지에 완벽히 할당되었는지 확인
+            let allAssigned = true;
+            for (const id in cart) {
+                const total = cart[id] || 0;
+                if (total > 0) {
+                    const assigned = getAssignedCountForProduct(parseInt(id));
+                    if (assigned < total) {
+                        allAssigned = false;
+                        break;
+                    }
+                }
+            }
+
             const addBtn = document.getElementById('addHomeBtn');
-            if (addBtn) addBtn.disabled = getRemainingQty() <= 0;
+            if (addBtn) {
+                addBtn.disabled = allAssigned || (getTotalSelectedCount() === 0);
+            }
         }
 
         function execDaumPostcode(cardId) {
@@ -580,11 +619,6 @@
         }
 
         function addHomeAddressCard() {
-            if (getRemainingQty() <= 0) {
-                alert('배송지에 지정되지 않은 상품 수량이 없습니다.');
-                return;
-            }
-
             homeCardSeq++;
             const cardId = `homeCard_${homeCardSeq}`;
             const container = document.getElementById('homeAddressContainer');
@@ -608,8 +642,8 @@
                             <input type="text" class="addr-name" placeholder="수령인 성함">
                         </div>
                         <div class="qty-field">
-                            <label>수량 선택 *</label>
-                            <select class="addr-qty-box" onchange="updateAllAddressCardsOptions()"></select>
+                            <label>품목 및 수량 *</label>
+                            <select class="addr-item-select" onchange="updateAllAddressCardsOptions()"></select>
                         </div>
                     </div>
                 </div>
@@ -717,7 +751,6 @@
             const radios = document.getElementsByName('receiveMethod');
 
             if (onlyPickup) {
-                // 픽업 전용 상품일 경우 방문 수령으로 강제 고정 및 라디오 비활성화
                 for (const r of radios) {
                     if (r.value === '방문 수령') r.checked = true;
                 }
@@ -751,10 +784,17 @@
             let receiverNames = [], receiverPhones = [], addresses = [];
 
             if (method === '택배 배송' && !onlyPickup) {
-                const rem = getRemainingQty();
-                if (rem > 0) {
-                    alert(`배송지에 지정되지 않은 상품이 ${rem}개 남아있습니다.`);
-                    return;
+                // 모든 상품이 배송지에 정확히 할당되었는지 확인
+                for (const id in cart) {
+                    const total = cart[id] || 0;
+                    if (total > 0) {
+                        const assigned = getAssignedCountForProduct(parseInt(id));
+                        if (assigned < total) {
+                            const p = products.find(prod => prod.id == id);
+                            alert(`"${p.name}" 상품의 수량이 배송지에 모두 지정되지 않았습니다.`);
+                            return;
+                        }
+                    }
                 }
 
                 const homeCards = document.querySelectorAll('#homeAddressContainer .address-card');
@@ -762,24 +802,31 @@
 
                 homeCards.forEach((card, idx) => {
                     if (formError) return;
-                    const qty = parseInt(card.querySelector('.addr-qty-box')?.value) || 0;
-                    if (qty > 0) {
-                        const name = card.querySelector('.addr-name').value.trim();
-                        const phone = formatPhoneNumber(card.querySelector('.addr-phone').value.trim());
-                        const zip = card.querySelector('.addr-zipcode').value.trim();
-                        const base = card.querySelector('.addr-base').value.trim();
-                        const detail = card.querySelector('.addr-detail').value.trim();
-
-                        if (!name || !phone || !base || !detail) {
-                            alert(`배송지 #${idx + 1} 정보를 정확히 입력해 주세요.`);
-                            formError = true;
-                            return;
-                        }
-
-                        receiverNames.push(`[배송지#${idx+1}] ${name}`);
-                        receiverPhones.push(`[배송지#${idx+1}] ${phone}`);
-                        addresses.push(`[배송지#${idx+1}] (${qty}개) (${zip}) ${base} ${detail}`);
+                    const select = card.querySelector('.addr-item-select');
+                    if (!select || !select.value) {
+                        alert(`배송지 #${idx + 1}의 상품 및 수량을 선택해주세요.`);
+                        formError = true;
+                        return;
                     }
+
+                    const [pId, qty] = select.value.split('_');
+                    const product = products.find(p => p.id == parseInt(pId));
+
+                    const name = card.querySelector('.addr-name').value.trim();
+                    const phone = formatPhoneNumber(card.querySelector('.addr-phone').value.trim());
+                    const zip = card.querySelector('.addr-zipcode').value.trim();
+                    const base = card.querySelector('.addr-base').value.trim();
+                    const detail = card.querySelector('.addr-detail').value.trim();
+
+                    if (!name || !phone || !base || !detail) {
+                        alert(`배송지 #${idx + 1} 정보를 정확히 입력해 주세요.`);
+                        formError = true;
+                        return;
+                    }
+
+                    receiverNames.push(`[배송지#${idx+1}] ${name}`);
+                    receiverPhones.push(`[배송지#${idx+1}] ${phone}`);
+                    addresses.push(`[배송지#${idx+1}] (${product.name} ${qty}개) (${zip}) ${base} ${detail}`);
                 });
 
                 if (formError) return;
