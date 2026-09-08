@@ -7,7 +7,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="샤인머스켓 직거래">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2917/2917995.png">
     
     <style>
         :root {
@@ -21,11 +20,17 @@
             --border-color: #e0e0e0;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 90px; max-width: 500px; margin: 0 auto; min-height: 100vh; position: relative; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 100px; max-width: 500px; margin: 0 auto; min-height: 100vh; position: relative; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+        
+        /* 외부 배너 및 알림 요소 완전 제거 */
+        [class*="notify"], [id*="notify"], [class*="banner"], .notice-bar {
+            display: none !important;
+        }
+
         header { background-color: var(--primary-color); color: white; padding: 18px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         header h1 { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         header p { font-size: 0.8rem; opacity: 0.85; margin-top: 4px; }
-        .notice-bar { background-color: #fff3e0; color: #e65100; padding: 10px 16px; font-size: 0.825rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #ffe0b2; }
+        
         .product-list { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
         .product-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
         
@@ -49,7 +54,7 @@
         .qty-btn { border: none; background: white; width: 28px; height: 28px; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .qty-val { font-size: 0.95rem; font-weight: 700; min-width: 18px; text-align: center; }
         
-        .cart-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; padding: 12px 16px; border-top: 1px solid var(--border-color); box-shadow: 0 -4px 12px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; z-index: 90; }
+        .cart-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; padding: 12px 16px; border-top: 1px solid var(--border-color); box-shadow: 0 -4px 12px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; z-index: 900; }
         .cart-info { display: flex; flex-direction: column; }
         .cart-count { font-size: 0.8rem; color: var(--text-sub); }
         .cart-shipping { font-size: 0.75rem; color: var(--primary-color); font-weight: 600; }
@@ -57,7 +62,7 @@
         .order-btn { background: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; }
         .order-btn:disabled { background: #ccc; cursor: not-allowed; }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: flex-end; }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 24px 20px; max-height: 85vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
         .modal-header h2 { font-size: 1.2rem; }
@@ -71,7 +76,6 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem; }
         .form-group textarea { resize: none; height: 50px; }
         
-        /* 수령방법 안내 박스 스타일 */
         .method-guide-box { background: #f0f7f4; border: 1px solid #b7e4c7; padding: 10px 12px; border-radius: 6px; font-size: 0.8rem; color: #2d6a4f; margin-top: 6px; line-height: 1.4; }
         
         .address-card { background: #fdfdfd; border: 1px solid #c8e6c9; padding: 12px; border-radius: 8px; margin-bottom: 12px; position: relative; }
@@ -99,11 +103,6 @@
         <h1>🍇 산지직송 프리미엄 샤인머스켓</h1>
         <p>구글 시트로 자동 접수되는 직거래 장터</p>
     </header>
-
-    <div class="notice-bar">
-        <span>📢</span>
-        <span>10만원 미만 개수당 배송비 2,000원 / 10만원 이상 무료배송!</span>
-    </div>
 
     <div class="product-list" id="productList"></div>
 
@@ -137,7 +136,6 @@
                         <option value="택배 배송">택배 배송 (10만원 미만 박스당 2,000원)</option>
                         <option value="직접 수령">직접 수령 (배송비 0원)</option>
                     </select>
-                    <!-- 수령방법 안내 문구 박스 -->
                     <div class="method-guide-box">
                         💡 <strong>요청사항 작성 안내:</strong><br>
                         • <strong>택배 주문 시:</strong> 하단 요청사항에 배송 희망 날짜를 기재해 주세요.<br>
@@ -355,7 +353,6 @@
                     if (p && tempRemaining[pId] > 0) {
                         const opt = document.createElement('option');
                         opt.value = p.id;
-                        // '남은 수량' 텍스트 제거하고 상품명만 깔끔하게 표시
                         opt.innerText = p.name;
                         select.appendChild(opt);
 
@@ -578,7 +575,7 @@
                 console.error(error);
                 alert('주문 전송 중 오류가 발생했습니다.');
             } finally {
-                submitBtn.innerText = "구글 시어로 주문서 전송하기";
+                submitBtn.innerText = "구글 시트로 주문서 전송하기";
                 submitBtn.disabled = false;
             }
         }
