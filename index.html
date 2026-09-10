@@ -591,7 +591,7 @@
                     const totalCartQty = cart[id] || 0;
                     if (totalCartQty > 0) {
                         const product = products.find(p => p.id == id);
-                        if (product && product.active) {
+                        if (if (product && product.active && !product.pickupOnly) {) {
                             // 현재 카드를 제외한 다른 카드들에서 할당된 수량 계산
                             const assignedElsewhere = getAssignedCountForProduct(parseInt(id), card.id);
                             // 이번 카드에서 온전히 선택할 수 있는 최대 수량 (총 장바구니 수량 - 다른 곳에서 쓰고 남은 수량)
