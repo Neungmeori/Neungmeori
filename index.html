@@ -226,7 +226,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfwsUenkqg0QOg-ITc7AZUbjSBPs2XK40HXp-rx9C514dt-t6xcHvh2QHFh_s_nxu5/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzU_092GPCFGZ7EzGEi_jEFt6pHhOMJToVUZomwetV8gtoH8Mf2Qj9kUdWS41Lk9Lwl/exec";
         const BANK_ACCOUNT_INFO = "농협 58902038501 황미화";
         const FEE_PER_BOX = 2000;
         const FREE_SHIPPING_LIMIT = 100000;
@@ -591,7 +591,7 @@
                     const totalCartQty = cart[id] || 0;
                     if (totalCartQty > 0) {
                         const product = products.find(p => p.id == id);
-                        if (if (product && product.active && !product.pickupOnly) {) {
+                        if (product && product.active && !product.pickupOnly) {
                             // 현재 카드를 제외한 다른 카드들에서 할당된 수량 계산
                             const assignedElsewhere = getAssignedCountForProduct(parseInt(id), card.id);
                             // 이번 카드에서 온전히 선택할 수 있는 최대 수량 (총 장바구니 수량 - 다른 곳에서 쓰고 남은 수량)
@@ -863,13 +863,13 @@
             submitBtn.innerText = "주문 접수 중...";
             submitBtn.disabled = true;
 
-            let itemListStr = "";
+            let itemListArr = [];
             for (const id in cart) {
                 const count = cart[id];
                 if (count > 0) {
                     const product = products.find(p => p.id == id);
                     if (product && product.active) {
-                        itemListStr += `${product.name} ${count}개 / `;
+                        itemListArr.push(`${product.name} ${count}개`);
                     }
                 }
             }
@@ -880,7 +880,7 @@
                 name: document.getElementById('userName').value.trim(),
                 phone: formatPhoneNumber(document.getElementById('userPhone').value.trim()),
                 method: method,
-                items: itemListStr.replace(/\s\/\s$/, ''),
+                items: itemListArr.join('\n'),
                 totalPrice: `${grandTotal.toLocaleString()}원 (배송비: ${currentShipping.toLocaleString()}원)`,
                 receiverName: receiverNames.join("\n"),
                 receiverPhone: receiverPhones.join("\n"),
