@@ -106,6 +106,7 @@
         .zipcode-btn { background: #424242; color: white; border: none; padding: 0 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
 
         .method-guide-box { background: #f0f7f4; border: 1px solid #b7e4c7; padding: 10px 12px; border-radius: 6px; font-size: 0.8rem; color: #2d6a4f; margin-top: 8px; line-height: 1.4; }
+        .option-fee-notice { font-size: 0.82rem; color: #d84315; font-weight: bold; margin-bottom: 6px; background: #fff3e0; padding: 6px 10px; border-radius: 4px; border: 1px dashed #ffa000; }
         
         .address-card { background: #fdfdfd; border: 1px solid #c8e6c9; padding: 12px; border-radius: 8px; margin-bottom: 12px; position: relative; }
         .address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: var(--primary-color); }
@@ -118,6 +119,7 @@
         .bank-info-box p { font-size: 0.85rem; color: #5d4037; line-height: 1.4; }
         .bank-account { font-weight: bold; font-size: 1rem; color: #d84315; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
         .payment-sub-notice { font-size: 0.8rem; color: #c62828; font-weight: bold; margin-top: 6px; display: block; }
+        .inquiry-text-sub { font-size: 0.85rem; color: var(--primary-color); font-weight: bold; margin-top: 6px; display: block; }
         .copy-btn { background: white; border: 1px solid #d84315; color: #d84315; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
         
         .cart-summary-box { background: #f8f9fa; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; }
@@ -132,7 +134,7 @@
 
     <header>
         <h1><img src="https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=100&q=80" alt="포도 로고"> 능머리농원 직거래장터</h1>
-        <p>문의하기 : 010-6876-5418</p>
+        <p>문의하기 : <a href="https://youtube.com/shorts/NMpp9Em6zQo?si=glI38zBhL5buhODw" target="_blank">유튜브 영상 바로가기</a></p>
         <p>소식알림 : <a href="https://open.kakao.com/o/gZxvYqKf" target="_blank">카카오톡 채널 링크</a></p>
     </header>
 
@@ -164,10 +166,12 @@
                     <button class="copy-btn" onclick="copyAccount()">복사</button>
                 </div>
                 <span class="payment-sub-notice">결제는 현금/계좌이체 가능 (카드결제 X)</span>
+                <span class="inquiry-text-sub">문의하기 : 010-6876-5418</span>
             </div>
 
             <form id="orderForm" onsubmit="submitOrder(event)">
                 <div class="form-group">
+                    <div class="option-fee-notice">⭐ 4kg 상자뚜껑(픽업전용)/보자기는 추가 요금 발생 (뚜껑: 2,000원 / 보자기: 1,000원)</div>
                     <label>수령 방법 선택 *</label>
                     <div class="radio-group" id="receiveMethodGroup">
                         <label class="radio-label" id="labelDelivery">
@@ -197,7 +201,6 @@
                 </div>
 
                 <div id="deliverySection">
-                    <!-- 영역: 배송지 구역 -->
                     <div class="form-section-title">
                         <span>🏡 배송지 정보</span>
                         <label class="same-check-wrap">
@@ -208,7 +211,6 @@
                     <button type="button" class="add-addr-btn" id="addHomeBtn" onclick="addHomeAddressCard()">+ 배송지 추가하기</button>
                 </div>
 
-                <!-- 요청사항 위에 전체 선택된 상품 및 상품 개수 요약 정보 배치 -->
                 <div class="cart-summary-box" id="cartSummaryBox">
                     <div class="cart-summary-title">🛒 선택한 상품 및 최종 수량</div>
                     <div id="summaryItemList"></div>
@@ -234,12 +236,27 @@
         const products = [
             { 
                 id: 1, 
-                name: "샤인머스켓 2kg (3수)", 
+                name: "샤인머스켓 2kg 선물용 (3수)", 
                 price: 20000, 
-                desc: "알이 굵은 3수 구성 (픽업 전용)", 
+                desc: "알이 굵은 선물용 3수 구성 (픽업 전용)", 
                 images: [
-                    "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80",
-                    "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80"
+                    "2선물.jpg",
+                    "2선물 (2).jpg",
+                    "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"
+                ], 
+                badge: "픽업전용",
+                active: true,
+                pickupOnly: true
+            },
+            { 
+                id: 9, 
+                name: "샤인머스켓 2kg 가정용 (4~5수)", 
+                price: 15000, 
+                desc: "실속 있는 가정용 4~5수 구성 (픽업 전용)", 
+                images: [
+                    "픽업가정.jpg",
+                    "픽업가정 (2).jpg",
+                    "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"
                 ], 
                 badge: "픽업전용",
                 active: true,
@@ -251,8 +268,9 @@
                 price: 30000, 
                 desc: "가정에서 푸짐하게 즐기는 실속형 4kg", 
                 images: [
-                    "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80",
-                    "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80"
+                    "택배가정.jpg",
+                    "포장.jpg",
+                    "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"
                 ], 
                 badge: "가정용",
                 active: true,
@@ -262,10 +280,14 @@
                 id: 3, 
                 name: "샤인머스켓 4kg 선물용 (5~6수)", 
                 price: 40000, 
-                desc: "고급스러운 포장과 최상급 송이 선별", 
+                desc: "고급스러운 포장과 최상급 송이 선별 (선물용 6장 슬라이드)", 
                 images: [
-                    "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80",
-                    "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80"
+                    "택배선물.jpg",
+                    "택배선물 (5).jpg",
+                    "택배선물 (7).jpg",
+                    "택배선물 (4).jpg",
+                    "택배선물 (8).jpg",
+                    "포장.jpg"
                 ], 
                 badge: "선물용",
                 active: true,
@@ -276,7 +298,7 @@
                 name: "샤인머스켓 4kg 파치", 
                 price: 0, 
                 desc: "10월 중순 경 판매예정", 
-                images: ["https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80"], 
+                images: ["https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80", "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80", "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"], 
                 badge: "가격미정",
                 active: false
             },
@@ -285,9 +307,7 @@
                 name: "고구마", 
                 price: 0, 
                 desc: "10월 중순 이후 판매예정", 
-                images: [
-                    "https://images.unsplash.com/photo-1597362925123-77861dcf3bc7?auto=format&fit=crop&w=400&q=80"
-                ], 
+                images: ["고구마.jpg"], 
                 badge: "준비중",
                 active: false
             },
@@ -296,7 +316,7 @@
                 name: "수향미", 
                 price: 0, 
                 desc: "10월 중순 이후 판매예정", 
-                images: ["https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=400&q=80"], 
+                images: ["https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=400&q=80", "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80", "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80"], 
                 badge: "준비중",
                 active: false
             },
@@ -305,9 +325,7 @@
                 name: "서리태", 
                 price: 0, 
                 desc: "11월 중순 이후 판매예정", 
-                images: [
-                    "https://images.unsplash.com/photo-1551462147-360c55ea9737?auto=format&fit=crop&w=400&q=80"
-                ], 
+                images: ["서리태.jpg"], 
                 badge: "준비중",
                 active: false
             },
@@ -316,13 +334,13 @@
                 name: "오늘의 야채", 
                 price: 0, 
                 desc: "익년부터 운영예정", 
-                images: ["https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"], 
+                images: ["https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80", "https://images.unsplash.com/photo-1537640538966-79f365143fce?auto=format&fit=crop&w=400&q=80", "https://images.unsplash.com/photo-1599810528174-727f54c3752e?auto=format&fit=crop&w=400&q=80"], 
                 badge: "준비중",
                 active: false
             }
         ];
 
-        let cart = { 1: 0, 2: 0, 3: 0 };
+        let cart = { 1: 0, 9: 0, 2: 0, 3: 0 };
         let currentSlideState = {};
         let homeCardSeq = 0;
 
@@ -466,7 +484,7 @@
             let current = cart[pId] || 0;
             current += delta;
             if (current < 0) current = 0;
-            if (current > 99) current = 99;
+            if (current > 99) current = 99; // 최대치 제한 강화
             cart[pId] = current;
             renderProducts();
         }
@@ -535,9 +553,12 @@
                 if (excludeCardId && card.id === excludeCardId) return;
                 const select = card.querySelector('.addr-item-select');
                 if (select) {
-                    const [pId, qty] = select.value.split('_');
-                    if (parseInt(pId) === productId) {
-                        assigned += parseInt(qty) || 0;
+                    const val = select.value;
+                    if (val) {
+                        const [pId, qty] = val.split('_');
+                        if (parseInt(pId) === productId) {
+                            assigned += parseInt(qty) || 0;
+                        }
                     }
                 }
             });
@@ -562,7 +583,6 @@
                             const alreadyAssigned = getAssignedCountForProduct(parseInt(id), card.id);
                             const availableQty = maxQty - alreadyAssigned;
 
-                            // 현재 카드에서 이미 선택한 수량만큼은 가용량에 더해줌
                             let currentCardQty = 0;
                             if (currentValue) {
                                 const [pId, qty] = currentValue.split('_');
@@ -587,7 +607,6 @@
                 }
             });
 
-            // 모든 장바구니 상품이 배송지에 완벽히 할당되었는지 확인
             let allAssigned = true;
             for (const id in cart) {
                 const total = cart[id] || 0;
@@ -784,7 +803,6 @@
             let receiverNames = [], receiverPhones = [], addresses = [];
 
             if (method === '택배 배송' && !onlyPickup) {
-                // 모든 상품이 배송지에 정확히 할당되었는지 확인
                 for (const id in cart) {
                     const total = cart[id] || 0;
                     if (total > 0) {
@@ -874,7 +892,7 @@
                 });
 
                 alert('주문 전송을 완료했습니다. 입금 확인 후 처리됩니다.');
-                cart = { 1: 0, 2: 0, 3: 0 };
+                cart = { 1: 0, 9: 0, 2: 0, 3: 0 };
                 renderProducts();
                 document.getElementById('orderForm').reset();
                 closeOrderModal();
