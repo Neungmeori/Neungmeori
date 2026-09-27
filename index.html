@@ -141,7 +141,7 @@
     <div class="product-list" id="productList"></div>
 
     <div class="cart-bar">
-        <div class="shipping-notice-bar">📦 10만원 이상 무료배송 / 미달 시 한 박스 2,000원</div>
+       <!-- <div class="shipping-notice-bar">📦 10만원 이상 무료배송 / 미달 시 한 박스 2,000원</div> -->
         <div class="cart-main-row">
             <div class="cart-info">
                 <span class="cart-count" id="cartCount">선택한 상품: 0개</span>
@@ -228,8 +228,8 @@
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzU_092GPCFGZ7EzGEi_jEFt6pHhOMJToVUZomwetV8gtoH8Mf2Qj9kUdWS41Lk9Lwl/exec";
         const BANK_ACCOUNT_INFO = "농협 58902038501 황미화";
-        const FEE_PER_BOX = 2000;
-        const FREE_SHIPPING_LIMIT = 100000;
+        const FEE_PER_BOX = 0;
+        const FREE_SHIPPING_LIMIT = 0;
 
         document.getElementById('accountText').innerText = BANK_ACCOUNT_INFO;
 
@@ -511,14 +511,9 @@
                 }
             }
 
-            const method = getSelectedReceiveMethod();
             let currentShipping = 0;
 
-            if (totalItems > 0 && method === '택배 배송' && !hasOnlyPickupItems()) {
-                currentShipping = (productTotal >= FREE_SHIPPING_LIMIT) ? 0 : (totalItems * FEE_PER_BOX);
-            }
-
-            return { totalItems, productTotal, currentShipping, grandTotal: productTotal + currentShipping };
+            return { totalItems, productTotal, currentShipping, grandTotal: productTotal };
         }
 
         function updateCartBar() {
