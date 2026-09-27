@@ -530,7 +530,7 @@
                     if (productTotal >= FREE_SHIPPING_LIMIT && totalItems > 0) {
                         document.getElementById('cartShipping').innerText = `배송비: 0원`;
                     } else {
-                        document.getElementById('cartShipping').innerText = `배송비: ${currentShipping.toLocaleString()}원 (${totalItems}박스 x 2천원)`;
+                        document.getElementById('cartShipping').innerText = `배송비: ${currentShipping.toLocaleString()}원 (${totalItems}박스 x 0원)`;
                     }
                 } else {
                     document.getElementById('cartShipping').innerText = `배송비: 0원 (방문수령)`;
